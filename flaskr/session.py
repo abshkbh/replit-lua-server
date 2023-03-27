@@ -26,6 +26,8 @@ class Session():
         table_id = str(lua_output)
         for key, value in list(lua_output.items()):
             print(f'Key={key} Value={value}')
+            # Since these are key, value pairs for a table they need different identifiers in their
+            # dictionary representation to delinate which is the Key and which is the value.
             key_dict = self.serialize_lua_result(
                 key, "KeyType", "KeyValue", table_id)
             value_dict = self.serialize_lua_result(
