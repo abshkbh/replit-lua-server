@@ -22,14 +22,15 @@ class Session():
         if lua_output is None:
             return {}
 
+        # Bool check has to come before int check as "bool" also matches with isInstance of int.
+        if isinstance(lua_output, bool):
+            return {'ValueType': 'Boolean', 'Value': str(lua_output)}
+
         if isinstance(lua_output, int):
             return {'ValueType': 'Number', 'Value': lua_output}
 
         if isinstance(lua_output, str):
             return {'ValueType': 'String', 'Value': lua_output}
-
-        if isinstance(lua_output, bool):
-            return {'ValueType': 'Boolean', 'Value': lua_output}
 
         raise ValueError(f"Can't serialize Lua output: {lua_output}")
 
