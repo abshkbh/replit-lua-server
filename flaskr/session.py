@@ -14,7 +14,11 @@ class Session():
         # The object to evaluate the expression.
         self.__lua_runtime = LuaRuntime()
 
-    def evaluate(self, expression: str):
+    def serialize_lua_result(self, result) -> dict:
+        """Serializes a Lua result into a dictionary."""
+        return {}
+
+    def evaluate(self, expression: str) -> dict:
         """
         Evaluates the given expression. Throws a ValueError if there was an error while
         executing.
@@ -25,3 +29,4 @@ class Session():
         except LuaSyntaxError as exception:
             raise ValueError(f'Syntax error:{exception}') from exception
         print(f'{expression} = {result}')
+        return self.serialize_lua_result(result)
