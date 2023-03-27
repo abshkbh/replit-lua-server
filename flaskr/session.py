@@ -12,7 +12,7 @@ class Session():
         self.__lua_runtime = LuaRuntime()
 
     # TODO: Move this to a helper class.
-    def serialize_lua_table(self, lua_output) -> dict:
+    def serialize_lua_table(self, lua_output, parent_table_ids) -> dict:
         """Serializes a Lua table and returns a dictionary."""
         print(f'Table items are {list(lua_output.items())}')
 
@@ -21,21 +21,22 @@ class Session():
         # dictionary to |table_values|, this would be the value of a table.
         table_values = []
         table_id = str(lua_output)
+        parent_table_ids.add(table_id)
         for key, value in list(lua_output.items()):
             print(f'Key={key} Value={value}')
             # Since these are key, value pairs for a table they need different identifiers in their
             # dictionary representation to delinate which is the Key and which is the value.
             key_dict = self.serialize_lua_result(
-                key, "KeyType", "KeyValue", table_id)
+                key, parent_table_ids, "KeyType", "KeyValue")
             value_dict = self.serialize_lua_result(
-                value, "ValueType", "ValueValue", table_id)
+                value, parent_table_ids, "ValueType", "ValueValue")
             key_dict.update(value_dict)
             table_values.append(key_dict)
         print(f'Table Values  = {table_values}')
         return {'Type': 'Table', 'Id': str(lua_output), 'Value': table_values}
 
     # TODO: Move this to a helper class.
-    def serialize_lua_result(self, lua_output, type_key=None, value_key=None, parent_table_id=None) -> dict:
+    def serialize_lua_result(self, lua_output, parent_table_ids, type_key=None, value_key=None) -> dict:
         """
         Serializes a Lua result passed as |lua_output| into a dictionary. lua_output: Result of a
         Lua evaluation.
@@ -44,8 +45,7 @@ class Session():
 
         value_key: An optional string to be used in the final dict for the Lua types value.
 
-        parent_table_id: An optional string indicating the id of a table, if it called us during its
-        serialization.
+        parent_table_ids: A set of table ids seen before this.
         """
 
         print(f'Type of {lua_output} is {type(lua_output)}')
@@ -72,11 +72,12 @@ class Session():
         # If we're called recursively from |serialize_lua_table| we may refer to ourselves, in this
         # case we need a check to stop recursing infinitely. This clauses just puts a reference to
         # the parent instead of going in an endless loop.
-        if parent_table_id and parent_table_id == str(lua_output):
-            print(f'In recursive clause for table_id={parent_table_id}')
-            return {type_key: 'TableRef', value_key: parent_table_id}
+        table_id = str(lua_output)
+        if table_id in parent_table_ids:
+            print(f'Table id={table_id} is present in set')
+            return {type_key: 'TableRef', value_key: table_id}
 
-        return self.serialize_lua_table(lua_output)
+        return self.serialize_lua_table(lua_output, parent_table_ids)
 
         # TODO: Add concerete check for 'table' type and re-add this.
         # raise ValueError(f"Can't serialize Lua output: {lua_output}")
@@ -92,4 +93,4 @@ class Session():
         except LuaSyntaxError as exception:
             raise ValueError(f'Syntax error:{exception}') from exception
         print(f'{expression} = {result}')
-        return self.serialize_lua_result(result)
+        return self.serialize_lua_result(result, set())
