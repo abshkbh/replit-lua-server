@@ -12,4 +12,16 @@ class Session():
         self.__session_id = session_id
 
         # The object to evaluate the expression.
-        self.__eval_object = LuaRuntime()
+        self.__lua_runtime = LuaRuntime()
+
+    def evaluate(self, expression: str):
+        """
+        Evaluates the given expression. Throws a ValueError if there was an error while
+        executing.
+        """
+
+        try:
+            result = self.__lua_runtime.execute(expression)
+        except LuaSyntaxError as exception:
+            raise ValueError(f'Syntax error:{exception}') from exception
+        print(f'{expression} = {result}')

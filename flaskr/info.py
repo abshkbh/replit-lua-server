@@ -37,4 +37,9 @@ def evaluate(session_id):
         abort(400, {'error': f'invalid session id={id}'})
 
     print(f'Going to evaluate expression={expression} on session id={id}')
+    try:
+        session.evaluate(expression)
+    except ValueError as exception:
+        abort(400, {'error': f'error while evaluating {exception}'})
+
     return jsonify()
