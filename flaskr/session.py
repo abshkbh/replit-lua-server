@@ -14,6 +14,7 @@ class Session():
         # The object to evaluate the expression.
         self.__lua_runtime = LuaRuntime()
 
+    # TODO: Move this to a helper class.
     def serialize_lua_table(self, lua_output) -> dict:
         """Serializes a Lua table and returns a dictionary."""
         print(f'Table items are {list(lua_output.items())}')
@@ -34,8 +35,19 @@ class Session():
         print(f'Table Values  = {table_values}')
         return {'Type': 'Table', 'Id': str(lua_output), 'Value': table_values}
 
+    # TODO: Move this to a helper class.
     def serialize_lua_result(self, lua_output, type_key=None, value_key=None, parent_table_id=None) -> dict:
-        """Serializes a Lua result passed as |lua_output| into a dictionary."""
+        """
+        Serializes a Lua result passed as |lua_output| into a dictionary. lua_output: Result of a
+        Lua evaluation.
+
+        type_key: An optional string to be used in the final dict for the Lua type.
+
+        value_key: An optional string to be used in the final dict for the Lua types value.
+
+        parent_table_id: An optional string indicating the id of a table, if it called us during its
+        serialization.
+        """
 
         print(f'Type of {lua_output} is {type(lua_output)}')
 
