@@ -13,7 +13,7 @@ def root():
 
 
 @bp.route('/create_session', methods=['POST'])
-def add():
+def create_session():
     """Creates a new session."""
 
     session_id = SERVER_STATE.create_new_session()
