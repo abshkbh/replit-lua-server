@@ -14,9 +14,24 @@ class Session():
         # The object to evaluate the expression.
         self.__lua_runtime = LuaRuntime()
 
-    def serialize_lua_result(self, result) -> dict:
-        """Serializes a Lua result into a dictionary."""
-        return {}
+    def serialize_lua_result(self, lua_output) -> dict:
+        """Serializes a Lua result passed as |lua_output| into a dictionary."""
+
+        print(f'Type of {lua_output} is {type(lua_output)}')
+
+        if lua_output is None:
+            return {}
+
+        if isinstance(lua_output, int):
+            return {'ValueType': 'Number', 'Value': lua_output}
+
+        if isinstance(lua_output, str):
+            return {'ValueType': 'String', 'Value': lua_output}
+
+        if isinstance(lua_output, bool):
+            return {'ValueType': 'Boolean', 'Value': lua_output}
+
+        raise ValueError(f"Can't serialize Lua output: {lua_output}")
 
     def evaluate(self, expression: str) -> dict:
         """
