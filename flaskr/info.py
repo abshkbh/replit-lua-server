@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify
+from flaskr import global_state
 
 bp = Blueprint('info', __name__, url_prefix='/')
 
@@ -11,5 +12,7 @@ def root():
 
 @bp.route('/create_session', methods=['POST'])
 def add():
-    """Runs ls and returns the result"""
-    return jsonify({'output': 'dummy_file.txt'})
+    """Creates a new session."""
+
+    session_id = global_state.SERVER_STATE.create_session()
+    return jsonify({'id': session_id})
