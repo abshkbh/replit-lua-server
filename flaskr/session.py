@@ -16,6 +16,10 @@ class Session():
 
     def serialize_lua_table(self, lua_output) -> dict:
         """Serializes a Lua table and returns a dictionary."""
+        print(f'Table items are {list(lua_output.items())}')
+        # Values would be a list of dicts [{}, {}].
+        for key, value in list(lua_output.items()):
+            print(f'Key={key} Value={value}')
         return {'ValueType': 'Table', 'Id': str(lua_output)}
 
     def serialize_lua_result(self, lua_output) -> dict:
