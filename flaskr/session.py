@@ -22,17 +22,19 @@ class Session():
         # consiting of the key, value and their representation as one dictionary. Add this
         # dictionary to |table_values|, this would be the value of a table.
         table_values = []
+        table_id = str(lua_output)
         for key, value in list(lua_output.items()):
             print(f'Key={key} Value={value}')
-            key_dict = self.serialize_lua_result(key, "KeyType", "KeyValue")
+            key_dict = self.serialize_lua_result(
+                key, "KeyType", "KeyValue", table_id)
             value_dict = self.serialize_lua_result(
-                value, "ValueType", "ValueValue")
+                value, "ValueType", "ValueValue", table_id)
             key_dict.update(value_dict)
             table_values.append(key_dict)
         print(f'Table Values  = {table_values}')
         return {'Type': 'Table', 'Id': str(lua_output), 'Value': table_values}
 
-    def serialize_lua_result(self, lua_output, type_key=None, value_key=None) -> dict:
+    def serialize_lua_result(self, lua_output, type_key=None, value_key=None, parent_table_id=None) -> dict:
         """Serializes a Lua result passed as |lua_output| into a dictionary."""
 
         print(f'Type of {lua_output} is {type(lua_output)}')
@@ -55,6 +57,13 @@ class Session():
 
         if isinstance(lua_output, str):
             return {type_key: 'String', value_key: lua_output}
+
+        # If we're called recursively from |serialize_lua_table| we may refer to ourselves, in this
+        # case we need a check to stop recursing infinitely. This clauses just puts a reference to
+        # the parent instead of going in an endless loop.
+        if parent_table_id and parent_table_id == str(lua_output):
+            print(f'In recursive clause for table_id={parent_table_id}')
+            return {type_key: 'TableRef', value_key: parent_table_id}
 
         return self.serialize_lua_table(lua_output)
 
