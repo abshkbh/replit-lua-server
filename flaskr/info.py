@@ -23,6 +23,7 @@ def create_session():
 @bp.route('/evaluate/<int:session_id>', methods=['POST'])
 def evaluate(session_id):
     """Evaluates an expression at the server with id=|id|."""
+
     request_json = request.get_json()
     if not request_json:
         abort(400, {'error': 'no JSON data in the request'})
@@ -36,7 +37,8 @@ def evaluate(session_id):
     except ValueError as _:
         abort(400, {'error': f'invalid session id={id}'})
 
-    print(f'Going to evaluate expression={expression} on session id={id}')
+    print(
+        f'Going to evaluate expression={expression} on session id={session_id}')
     try:
         session.evaluate(expression)
     except ValueError as exception:
