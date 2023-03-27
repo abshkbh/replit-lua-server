@@ -81,7 +81,7 @@ class Session():
 
         return self.serialize_lua_table(lua_output)
 
-        # TODO: Add concerete check for table and re-add this.
+        # TODO: Add concerete check for 'table' type and re-add this.
         # raise ValueError(f"Can't serialize Lua output: {lua_output}")
 
     def evaluate(self, expression: str) -> dict:
