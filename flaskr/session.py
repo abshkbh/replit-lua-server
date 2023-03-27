@@ -14,6 +14,10 @@ class Session():
         # The object to evaluate the expression.
         self.__lua_runtime = LuaRuntime()
 
+    def serialize_lua_table(self, lua_output) -> dict:
+        """Serializes a Lua table and returns a dictionary."""
+        return {'ValueType': 'Table', 'Id': str(lua_output)}
+
     def serialize_lua_result(self, lua_output) -> dict:
         """Serializes a Lua result passed as |lua_output| into a dictionary."""
 
@@ -32,7 +36,10 @@ class Session():
         if isinstance(lua_output, str):
             return {'ValueType': 'String', 'Value': lua_output}
 
-        raise ValueError(f"Can't serialize Lua output: {lua_output}")
+        return self.serialize_lua_table(lua_output)
+
+        # TODO: Add concerete check for table and re-add this.
+        # raise ValueError(f"Can't serialize Lua output: {lua_output}")
 
     def evaluate(self, expression: str) -> dict:
         """
