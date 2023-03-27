@@ -2,13 +2,11 @@ from flask import Flask
 from flask_cors import CORS
 from flaskr.error import bad_request
 from flaskr import info
-from flaskr import global_state
-from flaskr import server_state
 
 
 def create_app():
     """
-      Creates an app instance. We assume an "instance" folder already exists.
+    Creates an app instance. We assume an "instance" folder already exists.
     """
 
     # Create and config the app.
@@ -22,8 +20,6 @@ def create_app():
     CORS(app)
     # Register error handlers across blueprints.
     app.register_error_handler(400, bad_request)
-
-    global_state.SERVER_STATE = server_state.ServerState()
 
     # Register info related routes.
     app.register_blueprint(info.bp)

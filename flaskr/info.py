@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify
-from flaskr import global_state
+from flaskr import server_state
 
+# TODO: Move global object initialization in init to be used by other endpoint collections as well.
+SERVER_STATE = server_state.ServerState()
 bp = Blueprint('info', __name__, url_prefix='/')
 
 
@@ -14,5 +16,5 @@ def root():
 def add():
     """Creates a new session."""
 
-    session_id = global_state.SERVER_STATE.create_session()
+    session_id = SERVER_STATE.create_new_session()
     return jsonify({'id': session_id})
