@@ -1,0 +1,14 @@
+from flask import Blueprint, jsonify, request, abort
+
+bp = Blueprint('info', __name__, url_prefix='/')
+
+
+@bp.route('/', methods=['GET'])
+def root():
+    """Runs ls and returns the result"""
+    return jsonify({'output' : 'Welcome to LUA evaluation server'})
+
+@bp.route('/create_session', methods=['POST'])
+def add():
+    """Runs ls and returns the result"""
+    return jsonify({'output' : 'dummy_file.txt'})
