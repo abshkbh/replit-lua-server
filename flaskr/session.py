@@ -17,7 +17,10 @@ class Session():
     def serialize_lua_table(self, lua_output) -> dict:
         """Serializes a Lua table and returns a dictionary."""
         print(f'Table items are {list(lua_output.items())}')
-        # Values would be a list of dicts [{}, {}].
+
+        # Values would be a list of dicts [{}, {}]. Go over each key value pair and get a dictionary
+        # consiting of the key, value and their representation as one dictionary. Add this
+        # dictionary to |table_values|, this would be the value of a table.
         table_values = []
         for key, value in list(lua_output.items()):
             print(f'Key={key} Value={value}')
