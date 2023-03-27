@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, abort
+from flask import Blueprint, jsonify
 
 bp = Blueprint('info', __name__, url_prefix='/')
 
