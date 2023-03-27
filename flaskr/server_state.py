@@ -31,6 +31,5 @@ class ServerState():
         "Creates a new session and returns its allocated id"
 
         new_session_id = self.get_and_increment_next_session_id()
-        self.__session_id_to_session[new_session_id] = session.Session(
-            new_session_id)
+        self.__session_id_to_session[new_session_id] = session.Session()
         return new_session_id
