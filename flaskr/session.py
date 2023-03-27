@@ -18,11 +18,18 @@ class Session():
         """Serializes a Lua table and returns a dictionary."""
         print(f'Table items are {list(lua_output.items())}')
         # Values would be a list of dicts [{}, {}].
+        table_values = []
         for key, value in list(lua_output.items()):
             print(f'Key={key} Value={value}')
-        return {'ValueType': 'Table', 'Id': str(lua_output)}
+            key_dict = self.serialize_lua_result(key, "KeyType", "KeyValue")
+            value_dict = self.serialize_lua_result(
+                value, "ValueType", "ValueValue")
+            key_dict.update(value_dict)
+            table_values.append(key_dict)
+        print(f'Table Values  = {table_values}')
+        return {'Type': 'Table', 'Id': str(lua_output), 'Value': table_values}
 
-    def serialize_lua_result(self, lua_output) -> dict:
+    def serialize_lua_result(self, lua_output, type_key=None, value_key=None) -> dict:
         """Serializes a Lua result passed as |lua_output| into a dictionary."""
 
         print(f'Type of {lua_output} is {type(lua_output)}')
@@ -30,15 +37,21 @@ class Session():
         if lua_output is None:
             return {}
 
+        if not type_key:
+            type_key = "Type"
+
+        if not value_key:
+            value_key = "Value"
+
         # Bool check has to come before int check as "bool" also matches with isInstance of int.
         if isinstance(lua_output, bool):
-            return {'ValueType': 'Boolean', 'Value': str(lua_output)}
+            return {type_key: 'Boolean', value_key: str(lua_output)}
 
         if isinstance(lua_output, int):
-            return {'ValueType': 'Number', 'Value': lua_output}
+            return {type_key: 'Number', value_key: lua_output}
 
         if isinstance(lua_output, str):
-            return {'ValueType': 'String', 'Value': lua_output}
+            return {type_key: 'String', value_key: lua_output}
 
         return self.serialize_lua_table(lua_output)
 
