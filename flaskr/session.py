@@ -12,7 +12,7 @@ class Session():
         self.__lua_runtime = LuaRuntime()
 
     # TODO: Move this to a helper class.
-    def serialize_lua_table(self, lua_output, parent_table_ids) -> dict:
+    def serialize_lua_table(self, lua_output, parent_table_ids, type_key, value_key) -> dict:
         """Serializes a Lua table and returns a dictionary."""
         print(f'Table items are {list(lua_output.items())}')
 
@@ -33,7 +33,7 @@ class Session():
             key_dict.update(value_dict)
             table_values.append(key_dict)
         print(f'Table Values  = {table_values}')
-        return {'Type': 'Table', 'Id': str(lua_output), 'Value': table_values}
+        return {type_key: 'Table', 'Id': str(lua_output), value_key: table_values}
 
     # TODO: Move this to a helper class.
     def serialize_lua_result(self, lua_output, parent_table_ids, type_key=None, value_key=None) -> dict:
@@ -77,7 +77,7 @@ class Session():
             print(f'Table id={table_id} is present in set')
             return {type_key: 'TableRef', value_key: table_id}
 
-        return self.serialize_lua_table(lua_output, parent_table_ids)
+        return self.serialize_lua_table(lua_output, parent_table_ids, type_key, value_key)
 
         # TODO: Add concerete check for 'table' type and re-add this.
         # raise ValueError(f"Can't serialize Lua output: {lua_output}")
